@@ -13,11 +13,13 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\UserAddressController;
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/test-cards', function () {
+    return view('test-cards');
+})->name('test-cards');
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
@@ -87,22 +89,29 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        $recentOrders = \App\Models\Order::where('user_id', auth()->id())
-            ->latest()
-            ->limit(5)
-            ->get();
-        
-        $wishlistCount = auth()->user()->wishlist()->count();
-        $wishlistItems = auth()->user()->wishlist()
-            ->with('product.primaryImage')
-            ->latest()
-            ->limit(4)
-            ->get();
-        
-        return view('dashboard', compact('recentOrders', 'wishlistCount', 'wishlistItems'));
-    })->name('dashboard');
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [UserDashboardController::class, 'orders'])->name('orders');
+    Route::get('/wishlist', [UserDashboardController::class, 'wishlist'])->name('wishlist');
+});
+
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
+
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+
+    // Orders
+    Route::get('/orders', [UserDashboardController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [UserDashboardController::class, 'showOrder'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [UserDashboardController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{order}/return', [UserDashboardController::class, 'requestReturn'])->name('orders.return');
+
+    // Profile
+    Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile');
+    Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+
+    // Addresses
+    Route::get('/addresses', [UserAddressController::class, 'index'])->name('addresses');
+    Route::post('/addresses', [UserAddressController::class, 'store'])->name('addresses.store');
 });
 
 
