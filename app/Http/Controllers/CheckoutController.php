@@ -10,12 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
-use Stripe\Charge;
+use Stripe\PaymentIntent;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class CheckoutController extends Controller
 {
-        public function index()
+     public function index()
     {
         $cartItems = Cart::with('product')
             ->where(function($query) {
@@ -46,7 +46,7 @@ class CheckoutController extends Controller
             'shipping_state' => 'required|string',
             'shipping_zip' => 'required|string',
             'shipping_country' => 'required|string',
-            'stripeToken' => 'required'
+            'stripeToken' => 'required' // this is PaymentMethod ID
         ]);
 
         try {
@@ -57,16 +57,32 @@ class CheckoutController extends Controller
 
             Stripe::setApiKey(config('services.stripe.secret'));
 
-            $charge = Charge::create([
-                'amount' => $orderData['total'] * 100,
+            // ✅ Create PaymentIntent
+            $paymentIntent = \Stripe\PaymentIntent::create([
+                'amount' => (int) round($orderData['total'] * 100),
                 'currency' => 'usd',
-                'source' => $request->stripeToken,
-                'description' => 'Order payment'
+                'payment_method' => $request->stripeToken,
+                'confirm' => true,
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                    'allow_redirects' => 'never',
+                ],
             ]);
+
+            if ($paymentIntent->status !== 'succeeded') {
+                throw new \Exception('Payment not completed');
+            }
 
             $order = $this->createOrder($validated, $orderData);
             $this->createOrderItems($order, $cartItems);
-            $this->createPayment($order, 'stripe', $charge->id, $orderData['total'], 'completed');
+
+            $this->createPayment(
+                $order,
+                'stripe',
+                $paymentIntent->id,
+                $orderData['total'],
+                'completed'
+            );
 
             $this->updateStock($cartItems);
             $this->clearCart();
@@ -77,7 +93,9 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Payment failed: ' . $e->getMessage());
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 422);
         }
     }
 

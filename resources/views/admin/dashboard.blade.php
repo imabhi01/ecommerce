@@ -93,31 +93,30 @@
                             </a>
                         </td>
                         <td class="py-3 px-4">{{ $order->user->name }}</td>
-<td class="py-3 px-4 font-semibold">{{ number_format(
-order->total, 2) }}
-</td>
-<td class="py-3 px-4">
-<span class="px-2 py-1 rounded-full text-xs font-semibold
-                             @if($order->status === 'pending') bg-yellow-100 text-yellow-800
-                             @elseif($order->status === 'processing') bg-blue-100 text-blue-800
-                             @elseif($order->status === 'shipped') bg-purple-100 text-purple-800
-                             @elseif($order->status === 'delivered') bg-green-100 text-green-800
-                             @else bg-red-100 text-red-800
-                             @endif">
-{{ ucfirst($order->status) }}
-</span>
-</td>
-<td class="py-3 px-4 text-sm text-gray-600">{{ $order->created_at->format('M d, Y') }}</td>
-</tr>
-@empty
-<tr>
-<td colspan="5" class="text-center py-8 text-gray-500">No orders yet</td>
-</tr>
-@endforelse
-</tbody>
-</table>
-</div>
-</div>
+                        <td class="py-3 px-4 font-semibold">{{ number_format($order->total, 2) }}
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold
+                                @if($order->status === 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($order->status === 'processing') bg-blue-100 text-blue-800
+                                @elseif($order->status === 'shipped') bg-purple-100 text-purple-800
+                                @elseif($order->status === 'delivered') bg-green-100 text-green-800
+                                @else bg-red-100 text-red-800
+                                @endif">
+                                {{ ucfirst($order->status) }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-600">{{ $order->created_at->format('M d, Y') }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                        <td colspan="5" class="text-center py-8 text-gray-500">No orders yet</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                    </table>
+                    </div>
+                </div>
 
 <!-- Order Status Distribution -->
 <div class="bg-white rounded-lg shadow-md p-6">
