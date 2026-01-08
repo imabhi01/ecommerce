@@ -21,25 +21,14 @@ Route::get('/test-cards', function () {
     return view('test-cards');
 })->name('test-cards');
 
-// Admin Routes
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Products
-    Route::resource('products', AdminProductController::class);
-    Route::delete('products/images/{image}', [AdminProductController::class, 'deleteImage'])->name('products.images.delete');
-    
-    // Categories
-    Route::resource('categories', AdminCategoryController::class);
-    
-    // Orders
-    Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
-});
-
 Route::get('/', [ShopController::class, 'index'])->name('home');
-Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop', [ShopController::class, 'shop'])->name('shop.index');
+
+// Static Pages Contact, About, Blog etc.
+Route::get('/about', [ShopController::class, 'about'])->name('about');
+Route::get('/contact', [ShopController::class, 'contact'])->name('contact');
+Route::get('/blog', [ShopController::class, 'index'])->name('blog.index');
+
 Route::get('/shop/{slug}', [ShopController::class, 'show'])->name('shop.show');
 Route::get('/category/{slug}', [ShopController::class, 'category'])->name('shop.category');
 
@@ -112,6 +101,23 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     // Addresses
     Route::get('/addresses', [UserAddressController::class, 'index'])->name('addresses');
     Route::post('/addresses', [UserAddressController::class, 'store'])->name('addresses.store');
+});
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Products
+    Route::resource('products', AdminProductController::class);
+    Route::delete('products/images/{image}', [AdminProductController::class, 'deleteImage'])->name('products.images.delete');
+    
+    // Categories
+    Route::resource('categories', AdminCategoryController::class);
+    
+    // Orders
+    Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
 

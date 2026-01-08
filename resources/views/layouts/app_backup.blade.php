@@ -5,57 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'ModernShop') }}</title>
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-white shadow-sm border-b border-gray-200">
+<body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+    <nav class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20">
-                <!-- Logo -->
+            <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="flex items-center">
-                        <span class="text-3xl font-bold">
-                            <span class="text-gray-900">Modern</span><span class="text-indigo-600">Shop</span>
-                        </span>
+                    <a href="{{ route('home') }}" class="text-2xl font-bold text-indigo-600">
+                        ModernShop
                     </a>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('home') }}" 
-                    class="text-gray-700 hover:text-indigo-600 font-medium transition-colors {{ request()->routeIs('home') ? 'text-indigo-600' : '' }}">
-                        Home
-                    </a>
-                    <a href="{{ route('about') }}" 
-                    class="text-gray-700 hover:text-indigo-600 font-medium transition-colors {{ request()->routeIs('about') ? 'text-indigo-600' : '' }}">
-                        About
-                    </a>
-                    <a href="{{ route('shop.index') }}" 
-                    class="text-gray-700 hover:text-indigo-600 font-medium transition-colors {{ request()->routeIs('shop.*') ? 'text-indigo-600' : '' }}">
-                        Shop
-                    </a>
-                    <a href="{{ route('blog.index') }}" 
-                    class="text-gray-700 hover:text-indigo-600 font-medium transition-colors {{ request()->routeIs('blog.*') ? 'text-indigo-600' : '' }}">
-                        Blog
-                    </a>
-                    <a href="{{ route('contact') }}" 
-                    class="text-gray-700 hover:text-indigo-600 font-medium transition-colors {{ request()->routeIs('contact') ? 'text-indigo-600' : '' }}">
-                        Contact
-                    </a>
+                    <div class="hidden md:ml-10 md:flex md:space-x-8">
+                        <a href="{{ route('shop.index') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2">
+                            Shop
+                        </a>
+                        <a href="#" class="text-gray-700 hover:text-indigo-600 px-3 py-2">
+                            Categories
+                        </a>
+                    </div>
                 </div>
                 
-                <!-- Right Side Icons -->
                 <div class="flex items-center space-x-4">
-                    <!-- Search Icon -->
-                    <!-- <button @click="$refs.searchModal.classList.remove('hidden')" 
-                            class="text-gray-700 hover:text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </button> -->
+                    <!-- Search -->
+                    <!-- <div class="hidden md:block">
+                        <input type="text" placeholder="Search products..." 
+                               class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div> -->
 
-                        <div class="hidden md:block relative" x-data="{ open: false, query: '', results: [] }">
+                    <!-- Advanced Search -->
+                    <div class="hidden md:block relative" x-data="{ open: false, query: '', results: [] }">
                         <input type="text" 
                             x-model="query"
                             @input.debounce.300ms="
@@ -104,8 +84,27 @@
                             </a>
                         </div>
                     </div>
+                    
+                    <!-- Cart -->
+                    <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-indigo-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        @php
+                            $cartCount = \App\Models\Cart::where(function($query) {
+                                $query->where('user_id', auth()->id())
+                                      ->orWhere('session_id', session()->getId());
+                            })->sum('quantity');
+                        @endphp
+                        @if($cartCount > 0)
+                            <span class="absolute -top-2 -right-2 bg-indigo-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
+                    </a>
 
-                    <!-- Wishlist -->
+                    <!-- Wishlist Icon -->
                     @auth
                     <a href="{{ route('wishlist.index') }}" class="relative text-gray-700 hover:text-indigo-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,84 +121,35 @@
                     </a>
                     @endauth
                     
-                    <!-- Cart -->
-                    <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        </svg>
-                        @php
-                            $cartCount = \App\Models\Cart::where(function($query) {
-                                $query->where('user_id', auth()->id())
-                                    ->orWhere('session_id', session()->getId());
-                            })->sum('quantity');
-                        @endphp
-                        @if($cartCount > 0)
-                            <span class="absolute -top-2 -right-2 bg-indigo-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                                {{ $cartCount }}
-                            </span>
-                        @endif
-                    </a>
-                    
                     <!-- User Menu -->
                     @auth
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center text-gray-700 hover:text-indigo-600">
-                                <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                                </div>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
                             </button>
                             <div x-show="open" @click.away="open = false" 
-                                x-transition
-                                class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    My Orders
+                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                                <a href="{{ route('user.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    My Dashboard
                                 </a>
-                                <a href="{{ route('wishlist.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    My Wishlist
-                                </a>
-                                @if(auth()->user()->is_admin)
-                                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    Admin Panel
-                                </a>
-                                @endif
-                                <hr class="my-2">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         Logout
                                     </button>
                                 </form>
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600 font-medium">
-                            Login
-                        </a>
-                        <a href="{{ route('register') }}" 
-                        class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 font-medium transition-colors">
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600">Login</a>
+                        <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
                             Sign Up
                         </a>
                     @endauth
-
-                    <!-- Mobile Menu Button -->
-                    <button @click="$refs.mobileMenu.classList.toggle('hidden')" 
-                            class="md:hidden text-gray-700 hover:text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div x-ref="mobileMenu" class="hidden md:hidden border-t border-gray-200">
-            <div class="px-4 py-4 space-y-3">
-                <a href="{{ route('home') }}" class="block text-gray-700 hover:text-indigo-600 font-medium py-2">Home</a>
-                <a href="{{ route('about') }}" class="block text-gray-700 hover:text-indigo-600 font-medium py-2">About</a>
-                <a href="{{ route('shop.index') }}" class="block text-gray-700 hover:text-indigo-600 font-medium py-2">Shop</a>
-                <a href="{{ route('blog.index') }}" class="block text-gray-700 hover:text-indigo-600 font-medium py-2">Blog</a>
-                <a href="{{ route('contact') }}" class="block text-gray-700 hover:text-indigo-600 font-medium py-2">Contact</a>
             </div>
         </div>
     </nav>
@@ -222,12 +172,12 @@
     @endif
 
     <!-- Main Content -->
-    <main>
+    <main class="py-8">
         @yield('content')
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
+    <footer class="bg-gray-800 text-white mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>

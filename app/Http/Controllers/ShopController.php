@@ -22,7 +22,26 @@ class ShopController extends Controller
     // }
     
     //With Caching
-     public function index()
+
+    public function index()
+    {
+        // Cache categories for 1 hour
+        $categories = Cache::remember('active_categories', 3600, function () {
+            return Category::where('is_active', true)
+                ->withCount('products')
+                ->get();
+        });
+
+        // Eager load relationships
+        $products = Product::with(['primaryImage', 'category'])
+            ->where('is_active', true)
+            ->latest()
+            ->paginate(12);
+        
+        return view('home', compact('products', 'categories'));
+    }
+
+    public function shop()
     {
         // Cache categories for 1 hour
         $categories = Cache::remember('active_categories', 3600, function () {

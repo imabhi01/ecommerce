@@ -1,20 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                Welcome to ModernShop & Your
+                <span class="text-indigo-600">Digital Essentials</span>
+            </h1>
+            <div class="flex justify-center space-x-4">
+                <!-- <a href="{{ route('shop.index') }}" 
+                   class="bg-indigo-600 text-white px-8 py-4 rounded-lg hover:bg-indigo-700 font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                    Shop Now
+                </a> -->
+                <a href="#products" 
+                   class="bg-white text-indigo-600 px-8 py-4 rounded-lg hover:bg-gray-50 font-semibold text-lg border-2 border-indigo-600 transition-all">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-12 mb-12 text-white">
+    <!-- <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-12 mb-12 text-white">
         <h1 class="text-5xl font-bold mb-4">Welcome to ModernShop</h1>
         <p class="text-xl mb-8">Discover amazing products at unbeatable prices</p>
         <a href="#products" class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 inline-block">
             Shop Now
         </a>
-    </div>
+    </div> -->
 
     <!-- Categories -->
     @if($categories->isNotEmpty())
-    <div class="mb-12">
-        <h2 class="text-3xl font-bold mb-6">Shop by Category</h2>
+    <div class="mb-12 mt-12">
+        <h2 class="text-3xl font-bold mb-6">Categories</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             @foreach($categories as $category)
             <a href="{{ route('shop.category', $category->slug) }}" 
@@ -130,7 +151,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="mt-12">
+        <div class="mt-12 mb-12">
             {{ $products->links() }}
         </div>
     </div>
