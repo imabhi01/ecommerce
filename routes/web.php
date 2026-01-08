@@ -21,12 +21,14 @@ Route::get('/test-cards', function () {
     return view('test-cards');
 })->name('test-cards');
 
+Route::get('/clear-cache', [DashboardController::class, 'clearCache'])->name('clear-cache');
+
 Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/shop', [ShopController::class, 'shop'])->name('shop.index');
 
 // Static Pages Contact, About, Blog etc.
-Route::get('/about', [ShopController::class, 'about'])->name('about');
-Route::get('/contact', [ShopController::class, 'contact'])->name('contact');
+Route::get('/about', [DashboardController::class, 'aboutPage'])->name('about');
+Route::get('/contact', [DashboardController::class, 'contact'])->name('contact');
 Route::get('/blog', [ShopController::class, 'index'])->name('blog.index');
 
 Route::get('/shop/{slug}', [ShopController::class, 'show'])->name('shop.show');

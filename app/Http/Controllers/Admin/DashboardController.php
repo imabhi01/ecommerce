@@ -66,7 +66,6 @@ class DashboardController extends Controller
     //     ));
     // }
 
-
     //WITH CACHING
     public function index(){
         // Cache statistics for 5 minutes
@@ -118,5 +117,21 @@ class DashboardController extends Controller
             'topProducts',
             'ordersByStatus'
         ) + $statistics);
+    }
+
+    public function clearCache()
+    {
+        Cache::forget('admin_dashboard_stats');
+        Cache::forget('monthly_revenue');
+
+        return redirect()->route('admin.dashboard')->with('success', 'Dashboard cache cleared.');
+    }
+
+    public function aboutPage(){
+        return view('about');
+    }
+
+    public function contact(){
+        return view('contact');
     }
 }
