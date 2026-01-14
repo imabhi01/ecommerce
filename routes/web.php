@@ -16,6 +16,11 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UserAddressController;
+use App\Http\Controllers\BlogCommentController;
+
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Admin\BlogCategoryController as AdminBlogCategoryController;
+use App\Http\Controllers\Admin\BlogPostController as AdminBlogPostController;
 
 Route::get('/test-cards', function () {
     return view('test-cards');
@@ -29,7 +34,6 @@ Route::get('/shop', [ShopController::class, 'shop'])->name('shop.index');
 // Static Pages Contact, About, Blog etc.
 Route::get('/about', [DashboardController::class, 'aboutPage'])->name('about');
 Route::get('/contact', [DashboardController::class, 'contact'])->name('contact');
-Route::get('/blog', [ShopController::class, 'index'])->name('blog.index');
 
 Route::get('/shop/{slug}', [ShopController::class, 'show'])->name('shop.show');
 Route::get('/category/{slug}', [ShopController::class, 'category'])->name('shop.category');
@@ -122,5 +126,39 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
+// Route::middleware(['auth', 'isAdmin'])
+//     ->prefix('admin')
+//     ->name('admin.')
+//     ->group(function () {
+
+//         Route::resource('blog-categories', Admin\BlogCategoryController::class);
+//         Route::resource('blogs', Admin\BlogController::class);
+// });
+
+// Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+// Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+// Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+
+// Blog Frontend Routes
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+
+// Admin Blog Routes
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    // Blog Categories
+    Route::resource('blog/categories', AdminBlogCategoryController::class)
+        ->names('blog.categories');
+    
+    // Blog Posts
+    Route::resource('blog/posts', AdminBlogPostController::class)
+        ->names('blog.posts');
+    Route::delete('blog/posts/images/{image}', [AdminBlogPostController::class, 'deleteImage'])
+        ->name('blog.posts.images.delete');
+});
+
+Route::post('/blog/{post}/comments', [BlogCommentController::class, 'store'])
+    ->name('blog.comments.store');
 
 require __DIR__.'/auth.php';

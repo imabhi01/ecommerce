@@ -49,6 +49,31 @@
                     Orders
                 </a>
 
+                <!-- Blog Menu -->
+                <div x-data="{ open: {{ request()->routeIs('admin.blog.*') ? 'true' : 'false' }} }" class="mt-2">
+                    <button @click="open = !open" class="flex items-center w-full px-6 py-3 hover:bg-gray-800 justify-between {{ request()->routeIs('admin.blog.*') ? 'bg-gray-800 border-l-4 border-indigo-500 font-semibold' : '' }}">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h14z"/>
+                            </svg>
+                            Blog
+                        </span>
+                        <svg :class="{'rotate-180': open}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <div x-show="open" class="mt-1 space-y-1 pl-6">
+                        <a href="{{ route('admin.blog.categories.index') }}" class="block px-6 py-2 hover:bg-gray-800 rounded {{ request()->routeIs('admin.blog.categories.*') ? 'bg-gray-800 font-semibold' : '' }}">
+                            Categories
+                        </a>
+                        <a href="{{ route('admin.blog.posts.index') }}" class="block px-6 py-2 hover:bg-gray-800 rounded {{ request()->routeIs('admin.blog.posts.*') ? 'bg-gray-800 font-semibold' : '' }}">
+                            Posts
+                        </a>
+                    </div>
+                </div>
+
+
                 <div class="border-t border-gray-700 my-4"></div>
 
                 <a href="{{ route('home') }}" 

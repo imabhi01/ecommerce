@@ -23,9 +23,15 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            UserSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
+            // UserSeeder::class,
+            // CategorySeeder::class,
+            // ProductSeeder::class,
+            // BlogCategorySeeder::class,
+            // BlogSeeder::class,
+
+            // BlogCategorySeeder::class,
+            // BlogPostSeeder::class,
+            BlogPostImageSeeder::class,
         ]);
 
         $this->command->info('');
