@@ -71,16 +71,22 @@
                     <td class="py-4 px-6">
                         <div class="flex items-center">
                             @if($product->primaryImage)
-                                <img src="{{ asset('storage/' . $product->primaryImage->image_path) }}" 
-                                     alt="{{ $product->name }}" 
-                                     class="w-16 h-16 object-cover rounded-lg mr-4">
+                                <a href="{{ route('admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-800">
+                                    <img src="{{ asset('storage/' . $product->primaryImage->image_path) }}" 
+                                        alt="{{ $product->name }}" 
+                                        class="w-16 h-16 object-cover rounded-lg mr-4">
+                                </a>
                             @else
                                 <div class="w-16 h-16 bg-gray-200 rounded-lg mr-4 flex items-center justify-center">
-                                    <span class="text-gray-400 text-2xl">📦</span>
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-800">
+                                        <span class="text-gray-400 text-2xl">📦</span>
+                                    </a>
                                 </div>
                             @endif
                             <div>
-                                <p class="font-semibold text-gray-900">{{ $product->name }}</p>
+                                <a href="{{ route('admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-800">
+                                    <p class="font-semibold text-gray-900">{{ $product->name }}</p>
+                                </a>
                                 <p class="text-sm text-gray-600">SKU: {{ $product->sku }}</p>
                             </div>
                         </div>

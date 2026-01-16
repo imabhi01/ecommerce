@@ -1,11 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {{-- Main Content --}}
         <div class="lg:col-span-2">
-            {{-- Featured Post --}}
             @if($posts->isNotEmpty())
                 <article class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
                     @if($posts->first()->featured_image)
