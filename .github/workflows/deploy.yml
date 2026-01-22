@@ -1,0 +1,26 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            docker pull yourname/laravel-app:latest
+            docker stop laravel_app || true
+            docker rm laravel_app || true
+            docker run -d \
+              --name laravel_app \
+              -p 80:80 \
+              --env-file /var/www/laravel/.env \
+              yourname/laravel-app:latest
