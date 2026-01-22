@@ -1,26 +1,35 @@
-name: Deploy to Production
+name: Deploy Laravel to GCP
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # or master if your branch is master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.0
+      # 1️⃣ Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup SSH agent with the private key
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ubuntu
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            docker pull yourname/laravel-app:latest
-            docker stop laravel_app || true
-            docker rm laravel_app || true
-            docker run -d \
-              --name laravel_app \
-              -p 80:80 \
-              --env-file /var/www/laravel/.env \
-              yourname/laravel-app:latest
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 3️⃣ Deploy to the server
+      - name: Deploy to GCP
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /var/www/laravel
+            git fetch --all
+            git reset --hard origin/main
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+          EOF
