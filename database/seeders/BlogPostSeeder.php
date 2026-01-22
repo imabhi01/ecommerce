@@ -52,12 +52,12 @@ class BlogPostSeeder extends Seeder
                     'meta_title' => $title,
                     'meta_description' => "Learn more about {$title}.",
                     'meta_keywords' => strtolower($category->name . ', blog'),
-                    'is_published' => true,
+                    'status' => 'published',
                     'published_at' => now(),
                 ]);
 
                 $this->call([
-                    BlogPostImagesSeeder::class
+                    BlogPostImageSeeder::class
                 ]);
             }
         }
