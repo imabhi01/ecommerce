@@ -14,6 +14,7 @@ services:
       - ./database:/var/www/html/database
       - ./config:/var/www/html/config
       - ./storage:/var/www/html/storage
+      - ./bootstrap:/var/www/html/bootstrap
     depends_on:
       db:
         condition: service_healthy

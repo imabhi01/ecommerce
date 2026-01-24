@@ -1,59 +1,187 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Learn Grow Digital - E-Commerce Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> A modern, full-featured e-commerce platform built with Laravel 11, Tailwind CSS, and Docker. Featuring automated CI/CD deployments and enterprise-grade architecture.
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌐 Live Demo
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Production Site:** [https://learngrowdigital.co.uk](https://learngrowdigital.co.uk)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📖 About
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Learn Grow Digital is a comprehensive e-commerce solution designed for modern online retail. Built with cutting-edge technologies and best practices, it provides a robust foundation for selling products online with features like product management, shopping cart, secure checkout, and order tracking.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Why This Project?
 
-## Laravel Sponsors
+- **Modern Stack**: Laravel 11 + Tailwind CSS + Alpine.js
+- **Containerized**: Fully Dockerized for consistent environments
+- **Automated Deployments**: CI/CD with GitHub Actions
+- **Production Ready**: SSL/HTTPS, optimized assets, caching
+- **Scalable Architecture**: Microservices-ready design
+- **Developer Friendly**: Clean code, well-documented, easy to extend
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## ✨ Features
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 🛍️ Customer Features
 
-## Contributing
+- **Product Browsing**
+  - Browse products by category
+  - Advanced search and filtering
+  - Product details with images and descriptions
+  - Related product recommendations
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Shopping Experience**
+  - Add to cart functionality
+  - Real-time cart updates
+  - Wishlist management
+  - Product reviews and ratings
 
-## Code of Conduct
+- **Checkout Process**
+  - Secure checkout flow
+  - Multiple payment options (ready for integration)
+  - Order confirmation emails
+  - Guest checkout support
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Account Management**
+  - User registration and authentication
+  - Order history
+  - Profile management
+  - Address book
 
-## Security Vulnerabilities
+### 👨‍💼 Admin Features
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Dashboard**
+  - Sales analytics and reports
+  - Real-time order notifications
+  - Inventory tracking
+  - Customer insights
 
-## License
+- **Product Management**
+  - CRUD operations for products
+  - Category management
+  - Image uploads
+  - Bulk operations
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Order Management**
+  - Order processing workflow
+  - Status updates
+  - Invoice generation
+  - Shipping management
+
+### 🔧 Technical Features
+
+- **Performance**
+  - Optimized database queries
+  - Asset minification and bundling
+  - Browser caching
+  - CDN-ready
+
+- **Security**
+  - HTTPS/SSL encryption
+  - CSRF protection
+  - XSS prevention
+  - SQL injection protection
+  - Secure password hashing
+
+- **DevOps**
+  - Docker containerization
+  - Automated CI/CD pipeline
+  - Zero-downtime deployments
+  - Health monitoring
+
+- **Developer Experience**
+  - Hot module replacement (HMR)
+  - Code linting and formatting
+  - Git hooks for quality checks
+  - Comprehensive error logging
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Laravel** | 11.x | PHP Framework - MVC architecture |
+| **PHP** | 8.3 | Server-side language |
+| **MySQL** | 8.0 | Relational database |
+| **Composer** | 2.x | PHP dependency management |
+
+### Frontend
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Tailwind CSS** | 3.x | Utility-first CSS framework |
+| **Alpine.js** | 3.x | Lightweight JavaScript framework |
+| **Vite** | 5.x | Frontend build tool & bundler |
+| **Blade** | - | Laravel templating engine |
+
+### Infrastructure
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Docker** | Latest | Containerization |
+| **Docker Compose** | Latest | Multi-container orchestration |
+| **Apache** | 2.4 | Web server (in container) |
+| **GitHub Actions** | - | CI/CD pipeline |
+| **Certbot** | Latest | SSL certificate management |
+
+### Development Tools
+
+- **NPM** - Node.js package manager
+- **Git** - Version control
+- **PHPUnit** - PHP testing framework
+- **Laravel Pint** - Code style fixer
+- **Laravel Debugbar** - Development debugging
+
+---
+
+## 📋 Prerequisites
+
+### Required Software
+
+#### For Local Development
+- **Docker Desktop** (v20.10+)
+  - Download: [docker.com/products/docker-desktop](https://docker.com/products/docker-desktop)
+- **Git** (v2.30+)
+  - Download: [git-scm.com](https://git-scm.com)
+- **Node.js** (v20.x LTS) & NPM
+  - Download: [nodejs.org](https://nodejs.org)
+- **Composer** (v2.x)
+  - Download: [getcomposer.org](https://getcomposer.org)
+
+#### For Production Deployment
+- **Linux Server** (Ubuntu 22.04+ or Debian 11+)
+- **Domain Name** with DNS configured
+- **SSH Access** to server
+- **Minimum Server Requirements**:
+  - 2 CPU cores
+  - 4GB RAM
+  - 20GB SSD storage
+  - Ubuntu 22.04 LTS
+
+### Optional Tools
+- **TablePlus** or **MySQL Workbench** - Database management
+- **Postman** - API testing
+- **VS Code** - Code editor (with recommended extensions)
+
+---
+
+## 🚀 Installation & Setup
+
+### Method 1: Local Development (Non-Docker)
+
+Perfect for quick development and testing.
+
+#### Step 1: Clone Repository
+```bash
