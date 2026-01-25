@@ -4,32 +4,90 @@ on:
   push:
     branches:
       - main  # or master if your branch is master
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      # 1️⃣ Checkout the code
+     # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup SSH agent with the private key
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      # 3️⃣ Deploy to the server
+      
       - name: Deploy to GCP
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            
+            echo "📦 Navigating to project directory..."
             cd /opt/learngrowdigital
+            
+            echo "🔧 Fixing permissions for git..."
+            sudo chown -R $USER:$USER .
+            
+            echo "🔄 Pulling latest changes from GitHub..."
             git fetch --all
             git reset --hard origin/main
-            composer install --no-dev --optimize-autoloader
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            
+            echo "🔧 Fixing build directory permissions..."
+            sudo chown -R $USER:$USER public/build 2>/dev/null || sudo mkdir -p public/build && sudo chown -R $USER:$USER public/build
+            
+            echo "📦 Installing npm dependencies..."
+            npm install --production
+            
+            echo "🏗️ Building Vite assets..."
+            npm run build
+            
+            echo "📋 Verifying build files..."
+            ls -la public/build/
+            
+            echo "📋 Copying build files to container..."
+            docker cp public/build/. laravel_app:/var/www/html/public/build/
+            
+            echo "📦 Installing Composer dependencies in container..."
+            docker-compose exec -T app composer install --no-dev --optimize-autoloader --no-interaction
+            
+            echo "🗄️ Running database migrations..."
+            docker-compose exec -T app php artisan migrate --force
+            
+            echo "🧹 Clearing all caches..."
+            docker-compose exec -T app php artisan optimize:clear
+            
+            echo "📦 Caching for production..."
+            docker-compose exec -T app php artisan config:cache
+            docker-compose exec -T app php artisan route:cache
+            docker-compose exec -T app php artisan view:cache
+            
+            echo "🔐 Setting correct permissions in container..."
+            docker-compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/build
+            docker-compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+            docker-compose exec -T app chmod -R 755 /var/www/html/public/build
+            
+            echo "🔄 Restarting app container..."
+            docker-compose restart app
+            
+            echo "⏳ Waiting for restart..."
+            sleep 5
+            
+            echo "🧪 Health check..."
+            docker-compose ps
+            
+            echo "✅ Deployment completed successfully!"
+            echo "🌐 Site: https://learngrowdigital.co.uk"
           EOF
+
+      - name: Deployment Success
+        if: success()
+        run: echo "✅ Deployment successful!"
+          
+      - name: Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          exit 1
