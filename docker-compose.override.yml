@@ -1,0 +1,11 @@
+services:
+  app:
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+
+  db:
+    ports:
+      - "3306:3306"

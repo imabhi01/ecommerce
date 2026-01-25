@@ -4,10 +4,7 @@ services:
       context: .
       dockerfile: docker/apache/Dockerfile
     container_name: laravel_app
-    ports:
-      - "8080:80"
     volumes:
-      # Only mount what you need to edit
       - ./app:/var/www/html/app
       - ./routes:/var/www/html/routes
       - ./resources:/var/www/html/resources
@@ -19,8 +16,6 @@ services:
       db:
         condition: service_healthy
     environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
       - APP_KEY=${APP_KEY}
       - DB_HOST=db
       - DB_PORT=3306
@@ -41,8 +36,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - db_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 10s
