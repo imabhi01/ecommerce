@@ -6,6 +6,7 @@
 .phpactor.json
 .phpunit.result.cache
 .docker-compose.prod.yml
+.package-lock.json
 /.fleet
 /.idea
 /.nova
