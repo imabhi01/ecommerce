@@ -161,4 +161,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 Route::post('/blog/{post}/comments', [BlogCommentController::class, 'store'])
     ->name('blog.comments.store');
 
+
+Route::get('/privacy-policy', function () {
+    return view('policies.privacy-policy');
+})->name('privacy-policy');
+
+Route::get('/terms-conditions', function () {
+    return view('policies.terms-conditions');
+})->name('terms-conditions');
+
+Route::get('/refund-policy', function () {
+    return view('policies.refund-policy');
+})->name('refund-policy');
+
 require __DIR__.'/auth.php';

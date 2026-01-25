@@ -253,14 +253,14 @@
                 <div>
                     <h4 class="font-semibold mb-4">Legal</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-white">Refund Policy</a></li>
+                        <li><a href="{{ route('privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="{{ route('terms-conditions') }}" class="hover:text-white">Terms & Conditions</a></li>
+                        <li><a href="{{ route('refund-policy') }}" class="hover:text-white">Refund Policy</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 ModernShop. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} ModernShop. All rights reserved.</p>
             </div>
         </div>
     </footer>
