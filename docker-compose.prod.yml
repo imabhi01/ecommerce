@@ -10,6 +10,13 @@ services:
       - LETSENCRYPT_EMAIL=support@learngrowdigital.co.uk
     volumes:
       - ./apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      - ./app:/var/www/html/app
+      - ./routes:/var/www/html/routes
+      - ./resources:/var/www/html/resources
+      - ./database:/var/www/html/database
+      - ./config:/var/www/html/config
+      - ./storage:/var/www/html/storage
+      - ./bootstrap:/var/www/html/bootstrap
     networks:
       - laravel
     depends_on:
