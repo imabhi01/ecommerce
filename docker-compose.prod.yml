@@ -2,18 +2,32 @@ services:
   app:
     restart: always
     environment:
+      - APP_KEY=${APP_KEY}
       - APP_ENV=production
       - APP_DEBUG=false
-      - VIRTUAL_HOST=yourdomain.com
-      - LETSENCRYPT_HOST=yourdomain.com
-      - LETSENCRYPT_EMAIL=youremail@domain.com
+      - VIRTUAL_HOST=learngrowdigital.co.uk
+      - LETSENCRYPT_HOST=learngrowdigital.co.uk
+      - LETSENCRYPT_EMAIL=support@learngrowdigital.co.uk
     volumes:
       - ./apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.laravel.rule=Host(`yourdomain.com`)"
-      - "traefik.http.routers.laravel.entrypoints=websecure"
-      - "traefik.http.routers.laravel.tls.certresolver=lets-encrypt"
+    networks:
+      - laravel
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel
 
   traefik:
     image: traefik:v2.16
@@ -23,7 +37,7 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.lets-encrypt.acme.email=youremail@domain.com"
+      - "--certificatesresolvers.lets-encrypt.acme.email=iamdev.abhishek@gmail.com"
       - "--certificatesresolvers.lets-encrypt.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.lets-encrypt.acme.tlschallenge=true"
     ports:
@@ -35,3 +49,11 @@ services:
       - ./traefik/letsencrypt:/letsencrypt
     networks:
       - laravel
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
