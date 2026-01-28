@@ -1,9 +1,8 @@
-name: Deploy Laravel to GCP
+name: Deploy to GCP
 
 on:
   push:
-    branches:
-      - main  # or master if your branch is master
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,83 +10,89 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-     # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Checkout code
+      uses: actions/checkout@v4
       
-      - name: Deploy to GCP
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
-            
-            echo "📦 Navigating to project directory..."
-            cd /opt/learngrowdigital
-            
-            echo "🔧 Fixing permissions for git..."
-            sudo chown -R $USER:$USER .
-            
-            echo "🔄 Pulling latest changes from GitHub..."
-            git fetch --all
-            git reset --hard origin/main
-            
-            echo "🔧 Fixing build directory permissions..."
-            sudo chown -R $USER:$USER public/build 2>/dev/null || sudo mkdir -p public/build && sudo chown -R $USER:$USER public/build
-            
-            echo "📦 Installing npm dependencies..."
-            npm install --production
-            
-            echo "🏗️ Building Vite assets..."
-            npm run build
-            
-            echo "📋 Verifying build files..."
-            ls -la public/build/
-            
-            echo "📋 Copying build files to container..."
-            docker cp public/build/. laravel_app:/var/www/html/public/build/
-            
-            echo "📦 Installing Composer dependencies in container..."
-            docker-compose exec -T app composer install --no-dev --optimize-autoloader --no-interaction
-            
-            echo "🗄️ Running database migrations..."
-            docker-compose exec -T app php artisan migrate --force
-            
-            echo "🧹 Clearing all caches..."
-            docker-compose exec -T app php artisan optimize:clear
-            
-            echo "📦 Caching for production..."
-            docker-compose exec -T app php artisan config:cache
-            docker-compose exec -T app php artisan route:cache
-            docker-compose exec -T app php artisan view:cache
-            
-            echo "🔐 Setting correct permissions in container..."
-            docker-compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/build
-            docker-compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-            docker-compose exec -T app chmod -R 755 /var/www/html/public/build
-            
-            echo "🔄 Restarting app container..."
-            docker-compose restart app
-            
-            echo "⏳ Waiting for restart..."
-            sleep 5
-            
-            echo "🧪 Health check..."
-            docker-compose ps
-            
-            echo "✅ Deployment completed successfully!"
-            echo "🌐 Site: https://learngrowdigital.co.uk"
-          EOF
-
-      - name: Deployment Success
-        if: success()
-        run: echo "✅ Deployment successful!"
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.GCP_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H "${{ secrets.GCP_HOST }}" >> ~/.ssh/known_hosts
+      
+    - name: Deploy to GCP
+      env:
+        GCP_USERNAME: ${{ secrets.GCP_USERNAME }}
+        GCP_HOST: ${{ secrets.GCP_HOST }}
+        APP_KEY: ${{ secrets.APP_KEY }}
+        DB_DATABASE: ${{ secrets.DB_DATABASE }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      run: |
+        ssh "${GCP_USERNAME}@${GCP_HOST}" << 'ENDSSH'
+          set -e
           
-      - name: Deployment Failed
-        if: failure()
-        run: |
-          echo "❌ Deployment failed!"
+          cd ~/laravel-app || exit
+          
+          git pull origin main
+          
+          cat > .env << 'ENDENV'
+        APP_NAME=LearnGrowDigital
+        APP_ENV=production
+        APP_DEBUG=false
+        APP_KEY=${APP_KEY}
+        APP_URL=https://learngrowdigital.co.uk
+        
+        LOG_CHANNEL=stack
+        LOG_LEVEL=error
+        
+        DB_CONNECTION=mysql
+        DB_HOST=db
+        DB_PORT=3306
+        DB_DATABASE=${DB_DATABASE}
+        DB_USERNAME=${DB_USERNAME}
+        DB_PASSWORD=${DB_PASSWORD}
+        
+        BROADCAST_DRIVER=log
+        CACHE_DRIVER=file
+        FILESYSTEM_DISK=local
+        QUEUE_CONNECTION=sync
+        SESSION_DRIVER=file
+        SESSION_LIFETIME=120
+        ENDENV
+          
+          docker compose down
+          docker compose build --no-cache
+          docker compose up -d
+          
+          sleep 10
+          
+          docker compose exec -T app php artisan migrate --force
+          docker compose exec -T app php artisan config:cache
+          docker compose exec -T app php artisan route:cache
+          docker compose exec -T app php artisan view:cache
+          docker compose exec -T app chown -R www-data:www-data /var/www/html/storage
+          docker compose exec -T app chmod -R 775 /var/www/html/storage
+          
+          echo "✅ Deployment completed successfully!"
+        ENDSSH
+      
+    - name: Verify deployment
+      run: |
+        set -e
+        echo "Waiting 15 seconds for application to start..."
+        sleep 15
+        
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://learngrowdigital.co.uk)
+        
+        if [ "${response}" = "200" ] || [ "${response}" = "302" ]; then
+          echo "✅ Deployment verified! Site returned status code: ${response}"
+        else
+          echo "❌ Deployment verification failed! Status code: ${response}"
           exit 1
+        fi
+    
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Deployment failed! Check the logs above for details."
