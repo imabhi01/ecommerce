@@ -10,17 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    # 1️⃣ Checkout the repo
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
+    # 2️⃣ Set up SSH for GCP VM
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.GCP_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+        echo "${{ secrets.GCP_SSH_KEY }}" | base64 -d > ~/.ssh/gcp_deploy_key
+        chmod 600 ~/.ssh/gcp_deploy_key
         ssh-keyscan -H "${{ secrets.GCP_HOST }}" >> ~/.ssh/known_hosts
-      
-    - name: Deploy to GCP
+
+    # 3️⃣ Deploy via SSH
+    - name: Deploy to GCP VM
       env:
         GCP_USERNAME: ${{ secrets.GCP_USERNAME }}
         GCP_HOST: ${{ secrets.GCP_HOST }}
@@ -29,69 +32,79 @@ jobs:
         DB_USERNAME: ${{ secrets.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
-        ssh "${GCP_USERNAME}@${GCP_HOST}" << 'ENDSSH'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/gcp_deploy_key "${GCP_USERNAME}@${GCP_HOST}" bash << 'ENDSSH'
           set -e
-          
-          cd ~/laravel-app || exit
-          
+
+          # Move to project directory
+          # cd ~/laravel-app || exit
+
+          cd /opt/learngrowdigital || exit
+
+          # Pull latest code
           git pull origin main
-          
-          cat > .env << 'ENDENV'
-        APP_NAME=LearnGrowDigital
-        APP_ENV=production
-        APP_DEBUG=false
-        APP_KEY=${APP_KEY}
-        APP_URL=https://learngrowdigital.co.uk
-        
-        LOG_CHANNEL=stack
-        LOG_LEVEL=error
-        
-        DB_CONNECTION=mysql
-        DB_HOST=db
-        DB_PORT=3306
-        DB_DATABASE=${DB_DATABASE}
-        DB_USERNAME=${DB_USERNAME}
-        DB_PASSWORD=${DB_PASSWORD}
-        
-        BROADCAST_DRIVER=log
-        CACHE_DRIVER=file
-        FILESYSTEM_DISK=local
-        QUEUE_CONNECTION=sync
-        SESSION_DRIVER=file
-        SESSION_LIFETIME=120
-        ENDENV
-          
+
+          # Generate .env file
+          cat > .env << ENDENV
+
+            APP_NAME=LearnGrowDigital
+            APP_ENV=production
+            APP_DEBUG=false
+            APP_KEY=$APP_KEY
+            APP_URL=https://learngrowdigital.co.uk
+
+            LOG_CHANNEL=stack
+            LOG_LEVEL=error
+
+            DB_CONNECTION=mysql
+            DB_HOST=db
+            DB_PORT=3306
+            DB_DATABASE=$DB_DATABASE
+            DB_USERNAME=$DB_USERNAME
+            DB_PASSWORD=$DB_PASSWORD
+
+            BROADCAST_DRIVER=log
+            CACHE_DRIVER=file
+            FILESYSTEM_DISK=local
+            QUEUE_CONNECTION=sync
+            SESSION_DRIVER=file
+            SESSION_LIFETIME=120
+          ENDENV
+
+          # Docker deployment
           docker compose down
           docker compose build --no-cache
           docker compose up -d
-          
+
           sleep 10
-          
+
+          # Laravel post-deploy commands
           docker compose exec -T app php artisan migrate --force
           docker compose exec -T app php artisan config:cache
           docker compose exec -T app php artisan route:cache
           docker compose exec -T app php artisan view:cache
           docker compose exec -T app chown -R www-data:www-data /var/www/html/storage
           docker compose exec -T app chmod -R 775 /var/www/html/storage
-          
+
           echo "✅ Deployment completed successfully!"
         ENDSSH
-      
+
+    # 4️⃣ Verify deployment
     - name: Verify deployment
       run: |
         set -e
         echo "Waiting 15 seconds for application to start..."
         sleep 15
-        
+
         response=$(curl -s -o /dev/null -w "%{http_code}" https://learngrowdigital.co.uk)
-        
+
         if [ "${response}" = "200" ] || [ "${response}" = "302" ]; then
           echo "✅ Deployment verified! Site returned status code: ${response}"
         else
           echo "❌ Deployment verification failed! Status code: ${response}"
           exit 1
         fi
-    
+
+    # 5️⃣ Notify on failure
     - name: Notify on failure
       if: failure()
       run: |
