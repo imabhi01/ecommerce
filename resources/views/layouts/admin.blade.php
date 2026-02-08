@@ -7,6 +7,8 @@
     <title>Admin Panel - {{ config('app.name') }}</title>
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- {{-- Allow child views to push additional styles --}} -->
+    @stack('styles')
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex">
@@ -73,10 +75,9 @@
                     </div>
                 </div>
 
-
                 <div class="border-t border-gray-700 my-4"></div>
 
-                <a href="{{ route('home') }}" 
+                <a href="{{ route('home') }}" target="_blank"
                    class="flex items-center px-6 py-3 hover:bg-gray-800">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -135,6 +136,10 @@
         </div>
     </div>
 
+    <!-- {{-- Alpine.js for interactive components --}} -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- {{-- Allow child views to push additional scripts --}} -->
+    @stack('scripts')
 </body>
 </html>

@@ -69,7 +69,8 @@
                 </div>
 
                 {{-- Article Content --}}
-                <div class="blog-content text-gray-800 text-lg leading-relaxed">
+                <!-- <div class="blog-content text-gray-800 text-lg leading-relaxed"> -->
+                <div class="blog-article-content">
                     {!! $post->content !!}
                 </div>
             </div>

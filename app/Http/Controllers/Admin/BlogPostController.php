@@ -77,8 +77,10 @@ class BlogPostController extends Controller
             'blog_category_id' => 'required|exists:blog_categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:blog_posts,slug',
-            'excerpt' => 'required|string|max:500',
+            'excerpt' => 'required|string|max:50000',
             'content' => 'required|string',
+            'featured_image_from_library'  => 'nullable|string',   // path from library pick
+            'gallery_images_from_library'  => 'nullable|string',   // comma-separated IDs
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
@@ -131,9 +133,30 @@ class BlogPostController extends Controller
         $validated['allow_comments'] = $request->has('allow_comments') ? true : false;
 
         // Handle featured image upload
-        if ($request->hasFile('featured_image')) {
-            $validated['featured_image'] = $request->file('featured_image')
-                ->store('blog/posts/featured', 'public');
+        // if ($request->hasFile('featured_image')) {
+        //     $validated['featured_image'] = $request->file('featured_image')
+        //         ->store('blog/posts/featured', 'public');
+        // }
+
+        if (!$request->hasFile('featured_image') && $request->filled('featured_image_from_library')) {
+            // The value coming from the JS is the public URL.
+            // We need to convert it back to a relative storage path.
+            // Example URL:  /storage/blog/library/abc.jpg
+            // Storage path: blog/library/abc.jpg
+            $url = $request->input('featured_image_from_library');
+            $path = str_replace('/storage/', '', parse_url($url, PHP_URL_PATH));
+            $validated['featured_image'] = $path;
+        }
+
+        // If the user picked gallery images from the library, attach them to
+        // this new post (just update the blog_post_id on those rows).
+        if ($request->filled('gallery_images_from_library')) {
+            $ids = array_filter(explode(',', $request->input('gallery_images_from_library')));
+            if (!empty($ids)) {
+                BlogPostImage::whereIn('id', $ids)
+                    ->where('blog_post_id', null)   // only attach unattached images
+                    ->update(['blog_post_id' => $post->id]);
+            }
         }
 
         // Create the blog post
@@ -169,8 +192,10 @@ class BlogPostController extends Controller
             'blog_category_id' => 'required|exists:blog_categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:blog_posts,slug,' . $post->id,
-            'excerpt' => 'required|string|max:500',
+            'excerpt' => 'required|string|max:50000',
             'content' => 'required|string',
+            'featured_image_from_library'  => 'nullable|string',   // path from library pick
+            'gallery_images_from_library'  => 'nullable|string',   // comma-separated IDs
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
@@ -226,14 +251,35 @@ class BlogPostController extends Controller
             $validated['featured_image'] = null;
         }
 
-        // Handle new featured image upload
-        if ($request->hasFile('featured_image')) {
-            // Delete old image if exists
+        // // Handle new featured image upload
+        // if ($request->hasFile('featured_image')) {
+        //     // Delete old image if exists
+        //     if ($post->featured_image) {
+        //         Storage::disk('public')->delete($post->featured_image);
+        //     }
+        //     $validated['featured_image'] = $request->file('featured_image')
+        //         ->store('blog/posts/featured', 'public');
+        // }
+
+         // Same library-pick logic as store(), but also delete the old file if
+        // there was one and a new library pick is replacing it.
+        if (!$request->hasFile('featured_image') && $request->filled('featured_image_from_library')) {
             if ($post->featured_image) {
                 Storage::disk('public')->delete($post->featured_image);
             }
-            $validated['featured_image'] = $request->file('featured_image')
-                ->store('blog/posts/featured', 'public');
+            $url = $request->input('featured_image_from_library');
+            $path = str_replace('/storage/', '', parse_url($url, PHP_URL_PATH));
+            $validated['featured_image'] = $path;
+        }
+
+        // Attach library-picked gallery images to this post.
+        if ($request->filled('gallery_images_from_library')) {
+            $ids = array_filter(explode(',', $request->input('gallery_images_from_library')));
+            if (!empty($ids)) {
+                BlogPostImage::whereIn('id', $ids)
+                    ->where('blog_post_id', null)
+                    ->update(['blog_post_id' => $post->id]);
+            }
         }
 
         // Update the blog post

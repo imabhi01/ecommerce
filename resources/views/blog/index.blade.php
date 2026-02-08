@@ -25,7 +25,7 @@
                                 {{ $posts->first()->title }}
                             </a>
                         </h2>
-                        <p class="text-gray-600 mb-4">{{ $posts->first()->excerpt }}</p>
+                        <p class="text-gray-600 mb-4">{{ strip_tags($posts->first()->excerpt) }}</p>
                         <a href="{{ route('blog.show', $posts->first()->slug) }}" 
                             class="text-indigo-600 font-semibold hover:text-indigo-800">
                             Read More →
@@ -59,7 +59,7 @@
                                 </a>
                             </h3>
                             <p class="text-gray-600 text-sm mb-3">
-                                {{ Str::limit($post->excerpt, 100) }}
+                                {{ Str::limit(strip_tags($post->excerpt), 100) }}
                             </p>
                             <a href="{{ route('blog.show', $post->slug) }}" 
                                 class="text-indigo-600 text-sm font-semibold hover:text-indigo-800">
@@ -97,17 +97,17 @@
             </div>
 
             {{-- Recent Posts --}}
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 sidebar-sticky">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">Recent Posts</h3>
-                <ul class="space-y-4">
+                <ul class="space-y-">
                     @foreach($recentPosts as $post)
-                        <li class="flex gap-3">
+                        <li class="flex gap-2">
                             @if($post->featured_image)
                                 <img src="{{ asset('storage/' . $post->featured_image) }}" 
                                         alt="{{ $post->title }}"
                                         class="w-16 h-16 rounded object-cover">
                             @endif
-                            <div class="flex-1">
+                            <div class="flex-2">
                                 <a href="{{ route('blog.show', $post->slug) }}" 
                                     class="text-sm font-semibold text-gray-900 hover:text-indigo-600">
                                     {{ Str::limit($post->title, 50) }}

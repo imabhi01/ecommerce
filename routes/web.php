@@ -21,6 +21,8 @@ use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Admin\BlogCategoryController as AdminBlogCategoryController;
 use App\Http\Controllers\Admin\BlogPostController as AdminBlogPostController;
+use App\Http\Controllers\Admin\PhotoLibraryController;
+
 
 Route::get('/test-cards', function () {
     return view('test-cards');
@@ -126,26 +128,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
-// Route::middleware(['auth', 'isAdmin'])
-//     ->prefix('admin')
-//     ->name('admin.')
-//     ->group(function () {
-
-//         Route::resource('blog-categories', Admin\BlogCategoryController::class);
-//         Route::resource('blogs', Admin\BlogController::class);
-// });
-
-// Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-// Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
-// Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
-
-
 // Blog Frontend Routes
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
 
-// Admin Blog Routes
+// Admin Blog Routes (PREVIOUS ROUTES)
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     // Blog Categories
     Route::resource('blog/categories', AdminBlogCategoryController::class)
@@ -156,6 +144,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         ->names('blog.posts');
     Route::delete('blog/posts/images/{image}', [AdminBlogPostController::class, 'deleteImage'])
         ->name('blog.posts.images.delete');
+
+    // Photo library
+    Route::prefix('blog/photo-library')->name('blog.photo-library.')->group(function () {
+        Route::get('/',           [PhotoLibraryController::class, 'index'])->name('index');
+        Route::post('/upload',    [PhotoLibraryController::class, 'upload'])->name('upload');
+        Route::put('/{image}',    [PhotoLibraryController::class, 'updateAlt'])->name('update-alt');
+        Route::delete('/{image}', [PhotoLibraryController::class, 'destroy'])->name('destroy');
+        Route::post('/upload-single', [PhotoLibraryController::class, 'uploadSingle'])->name('upload-single');
+    });
 });
 
 Route::post('/blog/{post}/comments', [BlogCommentController::class, 'store'])

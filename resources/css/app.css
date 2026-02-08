@@ -3,6 +3,367 @@
 @tailwind utilities;
 
 @layer utilities {
+
+    .object-cover {
+        width: 100%;
+        -o-object-fit: cover;
+        object-fit: contain;
+    }
+
+    /* For Sticky recent posts sidebar */
+    .sidebar-sticky {
+        position: sticky;
+        top: 1rem;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+
+    .sidebar-section {
+        max-height: 24rem; /* 384px */
+        overflow-y: auto;
+    }
+
+    /* Custom scrollbar styling (optional) */
+    .sidebar-section::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar-section::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .sidebar-section::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .sidebar-section::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* ─── Blog Article Styles Start ──────────────────────────────────────────────────────── */
+
+    .blog-article-content {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 0 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        color: #242424;
+        line-height: 1.58;
+        letter-spacing: -0.003em;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    @media (min-width: 1080px) {
+        .blog-article-content {
+            max-width: 740px;
+        }
+    }
+
+    /* ─── Typography Base ───────────────────────────────────────────────────── */
+
+    .blog-article-content p,
+    .blog-article-content ul,
+    .blog-article-content ol,
+    .blog-article-content blockquote {
+        margin: 0;
+        margin-bottom: 1.5em;
+        font-size: 20px;
+        line-height: 1.58;
+        letter-spacing: -0.003em;
+    }
+
+    @media (min-width: 1080px) {
+        .blog-article-content p,
+        .blog-article-content ul,
+        .blog-article-content ol,
+        .blog-article-content blockquote {
+            font-size: 21px;
+            line-height: 32px;
+            margin-bottom: 2em;
+        }
+    }
+
+    /* ─── Headings ──────────────────────────────────────────────────────────── */
+
+    .blog-article-content h1 {
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.022em;
+        margin-top: 1.95em;
+        margin-bottom: 0.86em;
+    }
+
+    .blog-article-content h2 {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.22;
+        letter-spacing: -0.018em;
+        margin-top: 2.14em;
+        margin-bottom: 0.75em;
+    }
+
+    .blog-article-content h3 {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.25;
+        letter-spacing: -0.016em;
+        margin-top: 1.8em;
+        margin-bottom: 0.65em;
+    }
+
+    .blog-article-content h4 {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.4;
+        letter-spacing: -0.014em;
+        margin-top: 1.6em;
+        margin-bottom: 0.5em;
+    }
+
+    @media (min-width: 1080px) {
+        .blog-article-content h1 {
+            font-size: 42px;
+        }
+        .blog-article-content h2 {
+            font-size: 32px;
+            margin-top: 2.14em;
+        }
+        .blog-article-content h3 {
+            font-size: 26px;
+        }
+    }
+
+    /* ─── Links ─────────────────────────────────────────────────────────────── */
+
+    .blog-article-content a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: rgba(0, 0, 0, 0.3);
+        text-underline-offset: 2px;
+        transition: all 0.2s ease;
+    }
+
+    .blog-article-content a:hover {
+        text-decoration-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* ─── Lists ─────────────────────────────────────────────────────────────── */
+
+    .blog-article-content ul,
+    .blog-article-content ol {
+        padding-left: 30px;
+    }
+
+    .blog-article-content li {
+        margin-bottom: 0.75em;
+    }
+
+    .blog-article-content li:last-child {
+        margin-bottom: 0;
+    }
+
+    /* ─── Blockquotes ───────────────────────────────────────────────────────── */
+
+    .blog-article-content blockquote {
+        border-left: 3px solid #242424;
+        padding-left: 23px;
+        margin-left: -23px;
+        font-style: italic;
+        color: #6B6B6B;
+    }
+
+    @media (min-width: 1080px) {
+        .blog-article-content blockquote {
+            font-size: 22px;
+            line-height: 36px;
+            padding-left: 30px;
+            margin-left: -30px;
+        }
+    }
+
+    /* ─── Images ────────────────────────────────────────────────────────────── */
+
+    .blog-article-content img {
+        max-width: 100%;
+        height: auto;
+        margin: 2em auto;
+        display: block;
+        border-radius: 4px;
+    }
+
+    .blog-article-content figure {
+        margin: 2.5em 0;
+    }
+
+    .blog-article-content figcaption {
+        text-align: center;
+        font-size: 14px;
+        color: #6B6B6B;
+        margin-top: 10px;
+        line-height: 1.4;
+    }
+
+    /* ─── Code Blocks ───────────────────────────────────────────────────────── */
+
+    .blog-article-content code {
+        background-color: rgba(242, 242, 242, 1);
+        padding: 3px 6px;
+        font-size: 0.88em;
+        border-radius: 3px;
+        font-family: Menlo, Monaco, "Courier New", Courier, monospace;
+        color: #eb5757;
+        font-weight: 500;
+    }
+
+    .blog-article-content pre {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        padding: 20px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 2em 0;
+        line-height: 1.6;
+    }
+
+    .blog-article-content pre code {
+        background: none;
+        padding: 0;
+        color: #f8f8f2;
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+    @media (min-width: 1080px) {
+        .blog-article-content pre {
+            margin: 2.5em 0;
+            padding: 24px;
+        }
+        .blog-article-content pre code {
+            font-size: 16px;
+        }
+    }
+
+    /* ─── Horizontal Rule ───────────────────────────────────────────────────── */
+
+    .blog-article-content hr {
+        border: none;
+        border-top: 1px solid #e6e6e6;
+        margin: 2.5em 0;
+    }
+
+    /* ─── Tables ────────────────────────────────────────────────────────────── */
+
+    .blog-article-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2em 0;
+        font-size: 18px;
+    }
+
+    .blog-article-content th,
+    .blog-article-content td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e6e6e6;
+    }
+
+    .blog-article-content th {
+        font-weight: 600;
+        background-color: #f9f9f9;
+    }
+
+    /* ─── Strong & Emphasis ─────────────────────────────────────────────────── */
+
+    .blog-article-content strong,
+    .blog-article-content b {
+        font-weight: 700;
+    }
+
+    .blog-article-content em,
+    .blog-article-content i {
+        font-style: italic;
+    }
+
+    /* ─── First Paragraph (Drop Cap Optional) ──────────────────────────────── */
+
+    .blog-article-content > p:first-of-type::first-letter {
+        /* Uncomment for drop cap effect */
+        /* font-size: 3.5em; */
+        /* line-height: 1; */
+        /* float: left; */
+        /* margin-right: 0.1em; */
+        /* font-weight: 700; */
+    }
+
+    /* ─── Selection Highlight ───────────────────────────────────────────────── */
+
+    .blog-article-content ::selection {
+        background-color: #fef3c7;
+        color: #1a1a1a;
+    }
+
+    /* ─── Mobile Optimizations ─────────────────────────────────────────────── */
+
+    @media (max-width: 767px) {
+        .blog-article-content {
+            padding: 0 16px;
+        }
+        
+        .blog-article-content p,
+        .blog-article-content ul,
+        .blog-article-content ol,
+        .blog-article-content blockquote {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .blog-article-content h1 {
+            font-size: 32px;
+            margin-top: 1.5em;
+        }
+        
+        .blog-article-content h2 {
+            font-size: 26px;
+            margin-top: 1.8em;
+        }
+        
+        .blog-article-content h3 {
+            font-size: 22px;
+        }
+        
+        .blog-article-content pre {
+            padding: 16px;
+            font-size: 14px;
+        }
+    }
+        
+    /* ─── Blog Article Styles End ──────────────────────────────────────────────────────── */
+
+    /* ─── Print Styles ──────────────────────────────────────────────────────── */
+
+    @media print {
+        .blog-article-content {
+            max-width: 100%;
+            font-size: 12pt;
+            line-height: 1.5;
+        }
+        
+        .blog-article-content a {
+            text-decoration: underline;
+            color: #000;
+        }
+        
+        .blog-article-content pre {
+            background: #f5f5f5;
+            color: #000;
+            border: 1px solid #ddd;
+        }
+    }
+
     .animate-fade-in {
         animation: fadeIn 0.3s ease-in-out;
     }

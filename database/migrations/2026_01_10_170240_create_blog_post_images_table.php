@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('blog_post_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('blog_post_id')->constrained()->onDelete('cascade');
+            $table->foreignId('blog_post_id')->nullable()->constrained('blog_posts')->onDelete('cascade');
             $table->string('image_path');
+            $table->string('alt_text')->nullable();  // ← No ->after() in CREATE
             $table->integer('sort_order')->default(0);
-            $table->string('alt_text')->nullable();
             $table->timestamps();
+            $table->index('blog_post_id'); // Index for faster lookups of post images
         });
     }
 

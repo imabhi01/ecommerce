@@ -90,7 +90,7 @@
                             @endif
                             <div>
                                 <p class="font-semibold text-gray-900">{{ Str::limit($post->title, 50) }}</p>
-                                <p class="text-sm text-gray-600">{{ Str::limit($post->excerpt, 60) }}</p>
+                                <p class="text-sm text-gray-600">{{ Str::limit(strip_tags($post->excerpt), 60) }}</p>
                             </div>
                         </div>
                     </td>

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Blog;
+use App\Models\BlogPost; // Changed from Blog to BlogPost
 use App\Models\BlogCategory;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -16,10 +16,11 @@ class BlogSeeder extends Seeder
      */
     public function run(): void
     {
-        $author = User::first(); // assumes at least one user exists
+        $author = User::first();
 
         if (!$author) {
-            return;
+            $this->command->warn('No users found. Creating a dummy user...');
+            $author = User::factory()->create();
         }
 
         $blogs = [
@@ -71,21 +72,23 @@ class BlogSeeder extends Seeder
             $category = BlogCategory::where('name', $item['category'])->first();
 
             if (!$category) {
+                $this->command->warn("Category '{$item['category']}' not found. Skipping post: {$item['title']}");
                 continue;
             }
 
-            Blog::create([
+            BlogPost::create([
                 'blog_category_id' => $category->id,
-                'user_id' => $author->id,
-                'title' => $item['title'],
-                'slug' => Str::slug($item['title']),
-                'excerpt' => $item['excerpt'],
-                'content' => $item['content'],
-                'featured_image' => 'blogs/default.jpg', // add a placeholder image
-                'is_featured' => $item['is_featured'],
-                'is_published' => true,
-                'published_at' => now(),
-                'views' => rand(20, 500),
+                'user_id'          => $author->id,
+                'title'            => $item['title'],
+                'slug'             => Str::slug($item['title']),
+                'excerpt'          => $item['excerpt'],
+                'content'          => $item['content'],
+                'featured_image'   => 'blog/seeds/default.jpg', // ← FIXED: local path
+                'is_featured'      => $item['is_featured'],
+                'allow_comments'   => true,      // ← ADDED
+                'status'           => 'published', // ← CHANGED from is_published
+                'published_at'     => now(),
+                'views'            => rand(20, 500),
             ]);
         }
     }
