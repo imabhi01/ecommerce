@@ -65,7 +65,8 @@
         <table class="w-full">
             <thead class="bg-gray-50 border-b">
                 <tr>
-                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-600">Post</th>
+                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-600">Title</th>
+                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-600">Post Image</th>
                     <th class="text-left py-4 px-6 text-sm font-semibold text-gray-600">Category</th>
                     <th class="text-left py-4 px-6 text-sm font-semibold text-gray-600">Author</th>
                     <th class="text-left py-4 px-6 text-sm font-semibold text-gray-600">Views</th>
@@ -78,6 +79,12 @@
                 @forelse($posts as $post)
                 <tr class="hover:bg-gray-50">
                     <td class="py-4 px-6">
+                        <span class="text-blue-800 text-sm">
+                            <p class="font-semibold text-gray-900">{{ Str::limit($post->title, 50) }}</p>
+                            <p class="text-sm text-gray-600">{{ Str::limit(strip_tags($post->excerpt), 60) }}</p>
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">
                         <div class="flex items-center">
                             @if($post->featured_image)
                                 <img src="{{ asset('storage/' . $post->featured_image) }}" 
@@ -88,13 +95,9 @@
                                     <span class="text-gray-400 text-2xl">📝</span>
                                 </div>
                             @endif
-                            <div>
-                                <p class="font-semibold text-gray-900">{{ Str::limit($post->title, 50) }}</p>
-                                <p class="text-sm text-gray-600">{{ Str::limit(strip_tags($post->excerpt), 60) }}</p>
-                            </div>
                         </div>
                     </td>
-                    <td class="py-4 px-6">
+                    <td class="py-4 px-8">
                         <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                             {{ $post->category->name }}
                         </span>

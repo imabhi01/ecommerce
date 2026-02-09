@@ -27,7 +27,7 @@
                 <a href="{{ route('blog.category', $category->slug) }}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                     <div class="h-40 w-full bg-gray-200">
                         @if($category->image)
-                            <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-40 object-cover">
+                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-40 object-cover">
                         @endif
                     </div>
                     <div class="p-4">

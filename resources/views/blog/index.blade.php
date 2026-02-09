@@ -88,7 +88,7 @@
                                 class="flex justify-between items-center text-gray-700 hover:text-indigo-600">
                                 <span>{{ $category->name }}</span>
                                 <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
-                                    {{ $category->posts_count }}
+                                    {{ $category->published_posts_count }}
                                 </span>
                             </a>
                         </li>
@@ -101,15 +101,20 @@
                 <h3 class="text-xl font-bold text-gray-900 mb-4">Recent Posts</h3>
                 <ul class="space-y-">
                     @foreach($recentPosts as $post)
-                        <li class="flex gap-2">
+                        <li class="flex gap-3 items-start">
                             @if($post->featured_image)
-                                <img src="{{ asset('storage/' . $post->featured_image) }}" 
+                                <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded">
+                                    <img 
+                                        src="{{ asset('storage/' . $post->featured_image) }}" 
                                         alt="{{ $post->title }}"
-                                        class="w-16 h-16 rounded object-cover">
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
                             @endif
-                            <div class="flex-2">
+
+                            <div class="flex-1">
                                 <a href="{{ route('blog.show', $post->slug) }}" 
-                                    class="text-sm font-semibold text-gray-900 hover:text-indigo-600">
+                                class="text-sm font-semibold text-gray-900 hover:text-indigo-600">
                                     {{ Str::limit($post->title, 50) }}
                                 </a>
                                 <p class="text-xs text-gray-500">

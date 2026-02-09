@@ -38,12 +38,12 @@ class BlogCategory extends Model
 
     public function publishedPosts(): HasMany
     {
-        // return $this->hasMany(BlogPost::class, 'blog_category_id')
-        //     ->where('status', BlogPost::STATUS_PUBLISHED)
-        //     ->whereNotNull('published_at')
-        //     ->where('published_at', '<=', now());    
-
         return $this->hasMany(BlogPost::class, 'blog_category_id')
-            ->published();
+            ->where('status', BlogPost::STATUS_PUBLISHED)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());    
+
+        // return $this->hasMany(BlogPost::class, 'blog_category_id')
+        //     ->published();
     }
 }
